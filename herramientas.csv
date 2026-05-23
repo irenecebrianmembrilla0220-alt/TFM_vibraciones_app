@@ -1,0 +1,12 @@
+herramienta,situacion,tipo,aceleracion,incertidumbre,origen,fuente
+Taladro percutor,Taladrar en metal,Mano-brazo,3,1.5,Manual de instrucciones,Manual fabricante
+Taladro percutor,Atornillar,Mano-brazo,2.5,1.5,Manual de instrucciones,Manual fabricante
+PRO GKS 85 G,Serrar madera,Mano-brazo,3.5,1.5,Manual de instrucciones,Manual Bosch
+PRO GEX 12V-125,Lijar madera maciza,Mano-brazo,2.2,1.5,Manual de instrucciones,Manual Bosch
+PRO GWX 17-125 S,Lijar superficies (desbastado),Mano-brazo,5.4,1.5,Manual de instrucciones,Manual Bosch
+PRO GWX 17-125 S,Lijar con hoja de lija,Mano-brazo,3.6,1.5,Manual de instrucciones,Manual Bosch
+EXPERT EXDB18V2-180,Taladrar en hormigón,Mano-brazo,3.5,1.5,Manual de instrucciones,Manual fabricante
+PRO GDB 180 WE,Taladrar en hormigón,Mano-brazo,4.8,1.5,Manual de instrucciones,Manual Bosch
+PRO GKF 600,Fresar cantos,Mano-brazo,4.5,1.5,Manual de instrucciones,Manual Bosch
+PRO GOF 20-12,Fresar cantos,Mano-brazo,4,1.5,Manual de instrucciones,Manual Bosch
+PRO GDR 12V-110,Apriete de tornillos y tuercas (máximo admisible),Mano-brazo,10,1.5,Manual de instrucciones,Manual Bosch
