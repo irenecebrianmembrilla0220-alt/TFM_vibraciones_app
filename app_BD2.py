@@ -22,200 +22,447 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Pantalla más equilibrada: mantiene el estilo original sin apelotonar */
+    /* =========================
+       TEMA CLARO / FONDO BLANCO
+       ========================= */
+    .stApp,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stMain"],
+    .main {
+        background-color: #f5f7fb !important;
+        color: #111827 !important;
+    }
+
+    [data-testid="stHeader"] {
+        background-color: transparent !important;
+    }
+
     .block-container {
-        padding-top: 1.55rem !important;
+        padding-top: 2.2rem !important;
         padding-bottom: 1.0rem !important;
-        padding-left: 1.2rem !important;
-        padding-right: 1.2rem !important;
+        padding-left: 1.3rem !important;
+        padding-right: 1.3rem !important;
         max-width: 100% !important;
     }
 
     .main-title {
         background-color: #0b73b7;
-        color: white;
-        padding: 22px 18px;
+        color: white !important;
+        padding: 18px 18px;
         text-align: center;
-        border-radius: 6px;
+        border-radius: 7px;
         font-size: 25px;
         font-weight: bold;
         letter-spacing: 5px;
+        margin-top: 10px;
         margin-bottom: 22px;
         width: 100%;
         box-sizing: border-box;
-        line-height: 1.35;
-        min-height: 76px;
+        line-height: 1.25;
+        min-height: 72px;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: visible;
+        white-space: normal;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.10);
     }
 
-    .step-box {
-        background-color: #f7f7f7;
-        border: 1px solid #dddddd;
-        border-radius: 8px;
-        padding: 18px;
-        margin-bottom: 18px;
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.08);
+    /* Contenedores con borde en claro */
+    div[data-testid="stVerticalBlockBorderWrapper"],
+    div[class*="stVerticalBlockBorderWrapper"] {
+        background-color: #ffffff !important;
+        border: 1px solid #d7dde8 !important;
+        border-radius: 10px !important;
+        padding: 0.70rem !important;
+        box-shadow: 0 1px 4px rgba(15,23,42,0.05);
     }
 
-    .section-title {
-        color: #0b73b7;
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 10px;
+    div[data-testid="stVerticalBlock"] {
+        gap: 0.50rem !important;
     }
 
-    /* Títulos algo más contenidos para que cada paso entre mejor en pantalla */
+    h1, h2, h3, h4, h5, h6,
+    p, li, label, .stMarkdown, span, div {
+        color: #111827;
+    }
+
     h1 {
-        font-size: 1.5rem !important;
-        margin-bottom: 0.55rem !important;
-    }
-
-    h2 {
-        font-size: 1.12rem !important;
+        font-size: 1.55rem !important;
         margin-bottom: 0.5rem !important;
     }
 
-    h3 {
-        font-size: 1.12rem !important;
+    h2 {
+        font-size: 1.30rem !important;
         margin-bottom: 0.45rem !important;
     }
 
+    h3 {
+        font-size: 1.18rem !important;
+        margin-bottom: 0.40rem !important;
+    }
+
     h4 {
-        font-size: 0.96rem !important;
-        margin-bottom: 0.35rem !important;
+        font-size: 1.02rem !important;
+        margin-bottom: 0.30rem !important;
     }
 
     p, li, label, .stMarkdown {
-        font-size: 0.86rem !important;
+        font-size: 0.90rem !important;
     }
 
-    /* Reduce un poco la altura de los selectores y number_input sin comprimirlos demasiado */
+    /* Inputs claros y compactos */
+    div[data-baseweb="select"] > div,
+    div[data-testid="stNumberInput"] input,
+    input,
+    textarea {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        border-color: #cfd6e4 !important;
+    }
+
     div[data-baseweb="select"] > div {
-        min-height: 2.18rem !important;
+        min-height: 2.25rem !important;
     }
 
     div[data-testid="stNumberInput"] input {
-        min-height: 2.18rem !important;
-        font-size: 0.86rem !important;
-    }
-
-    div.stButton > button {
-        background-color: #0b73b7;
-        color: white;
-        font-weight: bold;
-        border-radius: 6px;
-        height: 2.3em;
-        width: 100%;
-        border: none;
-        padding: 0.25rem 0.8rem;
-        font-size: 0.88rem;
-    }
-
-    div.stButton > button:hover {
-        background-color: #095f96;
-        color: white;
-    }
-
-    /* Métricas personalizadas: visibles, pero menos grandes que st.metric */
-    .custom-metric {
-        margin-top: 6px;
-        margin-bottom: 8px;
-        padding-top: 3px;
-    }
-
-    .custom-metric-label {
-        font-size: 0.9rem;
-        font-weight: 600;
-        line-height: 1.2;
-        margin-bottom: 0.3rem;
-    }
-
-    .custom-metric-value {
-        font-size: 1.75rem;
-        font-weight: 500;
-        line-height: 1.15;
-    }
-
-    .metric-normal {
-        color: inherit;
-    }
-
-    .metric-action {
-        color: #f39c12;
-    }
-
-    .metric-limit {
-        color: #e74c3c;
-    }
-
-    hr {
-        margin-top: 0.55rem !important;
-        margin-bottom: 0.55rem !important;
-    }
-
-
-    /* Compactar Paso 2 y formularios sin perder legibilidad */
-    div[data-testid="stVerticalBlock"] {
-        gap: 0.45rem !important;
-    }
-
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 0.65rem !important;
-    }
-
-    div[data-testid="stNumberInput"] {
-        margin-bottom: 0.15rem !important;
-    }
-
-    div[data-testid="stSelectbox"] {
-        margin-bottom: 0.15rem !important;
+        min-height: 2.25rem !important;
+        font-size: 0.90rem !important;
     }
 
     div[data-testid="stNumberInput"] button {
-        min-height: 2.18rem !important;
-        height: 2.18rem !important;
+        min-height: 2.25rem !important;
+        height: 2.25rem !important;
+        background-color: #eef3f8 !important;
+        color: #111827 !important;
+        border-color: #cfd6e4 !important;
     }
 
     .stSelectbox label,
     .stNumberInput label {
-        font-size: 0.84rem !important;
+        font-size: 0.88rem !important;
+        margin-bottom: 0.10rem !important;
+        color: #111827 !important;
+    }
+
+    div[data-testid="stNumberInput"],
+    div[data-testid="stSelectbox"] {
         margin-bottom: 0.10rem !important;
     }
 
-    .compact-text {
-        font-size: 0.84rem !important;
-        line-height: 1.15 !important;
-        margin-bottom: 0.25rem !important;
+    /* DROPDOWNS / DESPLEGABLES */
+    div[data-baseweb="popover"], 
+    div[data-baseweb="menu"], 
+    ul[role="listbox"] {
+        background-color: #ffffff !important;
+        border: 1px solid #cfd6e4 !important;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1) !important;
     }
 
+    div[data-baseweb="popover"] *, 
+    div[data-baseweb="menu"] *, 
+    ul[role="listbox"] * {
+        color: #111827 !important;
+    }
+
+    li[role="option"], 
+    div[data-baseweb="menu"] li,
+    div[role="option"] {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        padding: 6px 12px !important;
+    }
+
+    li[role="option"]:hover, 
+    div[data-baseweb="menu"] li:hover,
+    div[role="option"]:hover,
+    li[data-highlighted="true"] {
+        background-color: #e8eef7 !important;
+        color: #0b73b7 !important;
+        cursor: pointer;
+    }
+
+    /* Botones */
+    div.stButton > button,
+    div[data-testid="stDownloadButton"] > button {
+        background-color: #0b73b7 !important;
+        color: white !important;
+        font-weight: bold !important;
+        border-radius: 7px !important;
+        height: 2.45em;
+        width: 100%;
+        border: none !important;
+        padding: 0.25rem 0.85rem;
+        font-size: 0.92rem;
+    }
+
+    div.stButton > button:hover,
+    div[data-testid="stDownloadButton"] > button:hover {
+        background-color: #095f96 !important;
+        color: white !important;
+    }
+
+    .custom-metric {
+        margin-top: 2px;
+        margin-bottom: 3px;
+        padding-top: 1px;
+    }
+
+    .custom-metric-label {
+        font-size: 0.82rem;
+        font-weight: 600;
+        line-height: 1.1;
+        margin-bottom: 0.12rem;
+    }
+
+    .custom-metric-value {
+        font-size: 1.45rem;
+        font-weight: 500;
+        line-height: 1.08;
+    }
+
+    .metric-normal {
+        color: #111827;
+    }
+
+    .metric-action,
+    .metric-action .custom-metric-label,
+    .metric-action .custom-metric-value {
+        color: #f39c12 !important;
+    }
+
+    .metric-limit,
+    .metric-limit .custom-metric-label,
+    .metric-limit .custom-metric-value {
+        color: #e74c3c !important;
+    }
+
+    /* Separadores entre secciones más oscuros y visibles */
+    hr {
+        margin-top: 0.60rem !important;
+        margin-bottom: 0.60rem !important;
+        border: none !important;
+        border-top: 1.8px solid #4b5563 !important;
+        opacity: 1 !important;
+    }
+
+    [data-testid="stDivider"] {
+        border-color: #4b5563 !important;
+        opacity: 1 !important;
+    }
+
+    .compact-text {
+        font-size: 0.86rem !important;
+        line-height: 1.18 !important;
+        margin-bottom: 0.20rem !important;
+        color: #374151 !important;
+    }
+
+    /* Pantalla de acceso */
+    .access-heading {
+        font-size: 1.55rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #111827 !important;
+    }
 
     .access-title {
-        font-size: 1.10rem;
-        font-weight: 700;
-        margin-bottom: 0.65rem;
+        font-size: 1.45rem;
+        font-weight: 800;
+        margin-bottom: 0.85rem;
+        color: #111827 !important;
     }
 
     .access-text {
-        font-size: 0.92rem;
-        line-height: 1.55;
-        margin-bottom: 0.65rem;
-    }
-
-    .access-spacer {
-        height: 1.75rem;
+        font-size: 1.08rem;
+        line-height: 1.70;
+        margin-bottom: 0.8rem;
+        color: #111827 !important;
     }
 
     .access-card-note {
-        min-height: 8.4rem;
+        min-height: 10.6rem;
     }
 
+    /* Recuadros visibles en tema claro */
+    div[data-testid="stVerticalBlockBorderWrapper"],
+    div[class*="stVerticalBlockBorderWrapper"] {
+        border: 2.5px solid #000000 !important;
+        background-color: #ffffff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.12) !important;
+        padding: 1.05rem !important;
+    }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] > div,
+    div[class*="stVerticalBlockBorderWrapper"] > div {
+        border-radius: 12px !important;
+    }
+
+    /* Tarjetas específicas de acceso */
+    .access-card-content {
+        border: none !important;
+        background: transparent !important;
+        padding: 0.10rem 0.15rem 0.25rem 0.15rem;
+    }
+
+    .access-columns-space {
+        margin-top: 0.6rem;
+    }
+
+    /* Avisos propios */
+    .alert-warning-custom {
+        background-color: #ffe08a !important;
+        border: 1.5px solid #f59e0b !important;
+        color: #111827 !important;
+        padding: 0.85rem 1rem !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .alert-success-custom {
+        background-color: #d1fae5 !important;
+        border: 1.5px solid #10b981 !important;
+        color: #064e3b !important;
+        padding: 0.85rem 1rem !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .alert-error-custom {
+        background-color: #fee2e2 !important;
+        border: 1.5px solid #ef4444 !important;
+        color: #7f1d1d !important;
+        padding: 0.85rem 1rem !important;
+        border-radius: 8px !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    /* Tablas claras personalizadas */
+    .tabla-scroll {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        border: 1.4px solid #111827;
+        border-radius: 8px;
+        background: #ffffff;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    table.tabla-clara {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        font-size: 0.90rem;
+    }
+
+    table.tabla-clara thead th {
+        background-color: #e8eef7 !important;
+        color: #111827 !important;
+        font-weight: 700;
+        border: 1px solid #111827;
+        padding: 0.55rem 0.65rem;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    table.tabla-clara tbody td {
+        background-color: #ffffff !important;
+        color: #111827 !important;
+        border: 1px solid #111827;
+        padding: 0.50rem 0.65rem;
+    }
+
+    table.tabla-clara tbody tr:nth-child(even) td {
+        background-color: #f6f8fc !important;
+    }
 
     a.anchor-link, .anchor-link {
         display: none !important;
     }
+
+    /* Refuerzo de columnas de la pantalla de acceso */
+    div[data-testid="column"] div[data-testid="stVerticalBlockBorderWrapper"],
+    div[data-testid="stColumn"] div[class*="stVerticalBlockBorderWrapper"],
+    div[class*="stColumn"] div[class*="stVerticalBlockBorderWrapper"] {
+        border: 2.5px solid #000000 !important;
+        background-color: #ffffff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15) !important;
+        padding: 1.15rem 1.25rem !important;
+        min-height: 255px !important;
+    }
+
+    .access-card-note {
+        min-height: 10.8rem !important;
+    }
+
+    div[data-testid="column"]:has(.access-card-content),
+    div[data-testid="stColumn"]:has(.access-card-content),
+    div[class*="stColumn"]:has(.access-card-content),
+    div[class*="stVerticalBlockBorderWrapper"]:has(.access-card-content) {
+        border: 2.5px solid #000000 !important;
+        background-color: #ffffff !important;
+        border-radius: 12px !important;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15) !important;
+        padding: 1.25rem 1.45rem !important;
+        min-height: 292px !important;
+        box-sizing: border-box !important;
+    }
+
+    div[data-testid="column"]:has(.access-card-content) .access-card-content,
+    div[data-testid="stColumn"]:has(.access-card-content) .access-card-content,
+    div[class*="stColumn"]:has(.access-card-content) .access-card-content {
+        padding: 0 !important;
+        background: transparent !important;
+    }
+
+    div[data-testid="column"]:has(.access-card-content) div.stButton > button,
+    div[data-testid="stColumn"]:has(.access-card-content) div.stButton > button,
+    div[class*="stColumn"]:has(.access-card-content) div.stButton > button {
+        width: auto !important;
+        min-width: 245px !important;
+        margin-top: 0.4rem !important;
+    }
+
+    /* DISEÑO DE ACORDEONES EXPANDERS */
+    div[data-testid="stExpander"], div[class*="stExpander"] {
+        border: 2.5px solid #000000 !important;
+        background-color: #ffffff !important;
+        border-radius: 10px !important;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08) !important;
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    div[data-testid="stExpander"] summary, div[class*="stExpander"] summary {
+        padding: 0.65rem 1.15rem !important;
+        background-color: #ffffff !important;
+        border-radius: 10px !important;
+    }
+
+    div[data-testid="stExpander"] summary p, div[class*="stExpander"] summary p {
+        font-size: 1.15rem !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+    }
+
+    div[data-testid="stExpander"] summary svg, div[class*="stExpander"] summary svg {
+        transform: scale(1.35) !important;
+        fill: #0b73b7 !important;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -232,6 +479,15 @@ if "etapa" not in st.session_state:
 
 if "modo_acceso" not in st.session_state:
     st.session_state.modo_acceso = None
+
+if "pendiente_confirmacion" not in st.session_state:
+    st.session_state.pendiente_confirmacion = False
+
+if "ajuste_confirmacion" not in st.session_state:
+    st.session_state.ajuste_confirmacion = False
+
+if "tipo_ajuste_seleccionado" not in st.session_state:
+    st.session_state.tipo_ajuste_seleccionado = "Modificar exposición total"
 
 
 # =========================
@@ -324,6 +580,36 @@ def mostrar_dato(titulo, valor, clase="metric-normal"):
     )
 
 
+def mostrar_aviso(texto, tipo="warning"):
+    clases = {
+        "warning": "alert-warning-custom",
+        "success": "alert-success-custom",
+        "error": "alert-error-custom"
+    }
+    clase = clases.get(tipo, "alert-warning-custom")
+    st.markdown(
+        f'<div class="{clase}">{texto}</div>',
+        unsafe_allow_html=True
+    )
+
+
+def mostrar_tabla_clara(df, height=240):
+    html = df.to_html(index=False, escape=True, classes="tabla-clara")
+    st.markdown(
+        f'<div class="tabla-scroll" style="max-height:{height}px;">{html}</div>',
+        unsafe_allow_html=True
+    )
+
+
+def guardar_y_calcular(tareas, tipo_vibracion, LIMITE, VLE):
+    st.session_state["tareas_calculadas"] = tareas
+    st.session_state["tipo_calculado"] = tipo_vibracion
+    st.session_state["limite_calculado"] = LIMITE
+    st.session_state["vle_calculado"] = VLE
+    st.session_state.etapa = "resultado"
+    st.rerun()
+
+
 # =========================
 # CÁLCULOS
 # =========================
@@ -370,7 +656,10 @@ def aplicar_objetivo_global(tareas, objetivo, LIMITE, VLE):
     if total_actual <= objetivo:
         return tareas_ajustadas, total_actual, pasos_reduccion
 
-    reduccion_necesaria = total_actual - objetivo
+    # Factor común para que el total ajustado coincida con el objetivo seleccionado.
+    # No se redondean los tiempos internamente; solo se redondean al mostrarlos.
+    # Así evitamos desviaciones como 95.18 cuando el objetivo era 95.
+    factor_reduccion = objetivo / total_actual
 
     for tarea in tareas_ajustadas:
         puntos_actuales = calcular_puntos(tarea)
@@ -378,23 +667,18 @@ def aplicar_objetivo_global(tareas, objetivo, LIMITE, VLE):
         if puntos_actuales <= 0:
             continue
 
-        peso = puntos_actuales / total_actual
-        reduccion_herramienta = reduccion_necesaria * peso
-        puntos_destino = puntos_actuales - reduccion_herramienta
-
         tiempo_anterior = tarea["t"]
         puntos_anteriores = puntos_actuales
 
-        nuevo_tiempo = calcular_tiempo_para_puntos(tarea, puntos_destino)
-
-        tarea["t"] = round(nuevo_tiempo, 2)
+        nuevo_tiempo = tiempo_anterior * factor_reduccion
+        tarea["t"] = nuevo_tiempo
         tarea["puntos_ajustados"] = calcular_puntos(tarea)
 
         pasos_reduccion.append(
             f"{tarea['nombre']} ({tarea['situacion']}): "
             f"{round(puntos_anteriores, 2)} puntos → "
             f"{round(tarea['puntos_ajustados'], 2)} puntos | "
-            f"{tiempo_anterior} h → {tarea['t']} h"
+            f"{round(tiempo_anterior, 2)} h → {round(tarea['t'], 2)} h"
         )
 
     nuevo_total = sum(calcular_puntos(t) for t in tareas_ajustadas)
@@ -410,8 +694,6 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
     tiempos = np.arange(0.5, 8.5, 0.5)
 
     referencia = 2.5
-    # La matriz se limita hasta 9.5 m/s² para que el máximo sea aproximadamente 1450 puntos
-    # 9.5 m/s² durante 8 h equivale a 1444 puntos.
     aceleraciones = np.arange(1, 10.0, 0.5)
 
     z = []
@@ -462,7 +744,7 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
         if len(nombre_corto) > 18:
             nombre_corto = nombre_corto[:18] + "..."
 
-        texto_punto = f"{nombre_corto}<br>{round(puntos, 0)} p"
+        texto_point = f"{nombre_corto}<br>{round(puntos, 0)} p"
 
         fig.add_trace(go.Scatter(
             x=[tarea["t"]],
@@ -473,7 +755,7 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
                 color="#2455ff",
                 line=dict(width=2, color="white")
             ),
-            text=[texto_punto],
+            text=[texto_point],
             textposition="top center",
             textfont=dict(size=10, color="black"),
             name=tarea["nombre"],
@@ -511,16 +793,17 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
             text=titulo,
             x=0.5,
             xanchor="center",
-            font=dict(color="black")
+            font=dict(color="black", size=18)
         ),
         xaxis_title="Tiempo de exposición (h)",
         yaxis_title="Aceleración equivalente (m/s²)",
-        height=540,
+        width=950,
+        height=430,
         showlegend=False,
         plot_bgcolor="white",
         paper_bgcolor="white",
-        font=dict(size=12, color="black"),
-        margin=dict(l=40, r=20, t=55, b=45)
+        font=dict(size=11, color="black"),
+        margin=dict(l=35, r=15, t=50, b=40)
     )
 
     fig.update_xaxes(
@@ -594,19 +877,22 @@ def mostrar_leyenda(tipo_vibracion, vle):
 
 
 def mostrar_matriz_con_leyenda(fig, tipo_vibracion, vle):
-    col_matriz, col_leyenda = st.columns([4.5, 1.3])
+    # La matriz se muestra con ancho fijo para que no ocupe toda la pantalla.
+    # Las columnas laterales ayudan a centrar el bloque gráfico + leyenda.
+    col_izq, col_matriz, col_leyenda, col_der = st.columns([0.25, 3.9, 1.25, 0.25])
 
     with col_matriz:
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=False)
 
     with col_leyenda:
         with st.container(border=True):
             mostrar_leyenda(tipo_vibracion, vle)
 
-    st.success(
+    mostrar_aviso(
         "Interpretación: las zonas verdes representan exposiciones seguras, "
         "las naranjas indican superación del nivel de acción y las rojas "
-        "indican superación del valor límite."
+        "indican superación del valor límite.",
+        "success"
     )
 
 
@@ -626,27 +912,29 @@ st.markdown(
 
 if st.session_state.modo_acceso is None:
 
-    st.markdown("## Selecciona modo de acceso")
+    st.markdown('<div class="access-heading">Selecciona modo de acceso</div>', unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2, gap="large")
 
     with col1:
         with st.container(border=True):
             st.markdown(
                 """
-                <div class="access-title">Trabajador</div>
-                <div class="access-text access-card-note">
-                    Acceso para realizar una evaluación:<br><br>
-                    • Seleccionar herramientas<br>
-                    • Introducir tiempos de uso<br>
-                    • Calcular exposición<br>
-                    • Ajustar tiempos
+                <div class="access-card-content access-panel">
+                    <div class="access-title">Trabajador</div>
+                    <div class="access-text access-card-note">
+                        Acceso para realizar una evaluación:<br><br>
+                        • Seleccionar herramientas<br>
+                        • Introducir tiempos de uso<br>
+                        • Calcular exposición<br>
+                        • Ajustar tiempos
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
-            if st.button("ENTRAR COMO TRABAJADOR →"):
+            if st.button("ENTRAR COMO TRABAJADOR →", key="btn_acceso_trabajador"):
                 st.session_state.modo_acceso = "trabajador"
                 st.rerun()
 
@@ -654,31 +942,38 @@ if st.session_state.modo_acceso is None:
         with st.container(border=True):
             st.markdown(
                 """
-                <div class="access-title">Técnico de prevención</div>
-                <div class="access-text access-card-note">
-                    Acceso para gestionar la base de datos:<br><br>
-                    • Ver herramientas registradas<br>
-                    • Añadir nuevos equipos<br>
-                    • Mantener los datos actualizados<br>
-                    • Revisar origen y fuente de los datos
+                <div class="access-card-content access-panel">
+                    <div class="access-title">Técnico de prevención</div>
+                    <div class="access-text access-card-note">
+                        Acceso para gestionar la base de datos:<br><br>
+                        • Ver herramientas registradas<br>
+                        • Añadir nuevos equipos<br>
+                        • Mantener los datos actualizados<br>
+                        • Revisar origen y fuente de los datos
+                    </div>
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
-            if st.button("ENTRAR COMO TÉCNICO →"):
+            if st.button("ENTRAR COMO TÉCNICO →", key="btn_acceso_tecnico"):
                 st.session_state.modo_acceso = "tecnico"
                 st.rerun()
 
     st.stop()
 
 
-if st.button("🔄 Reiniciar"):
-    st.session_state.clear()
-    st.session_state.reset_counter = 0
-    st.session_state.etapa = "formulario"
-    st.session_state.modo_acceso = None
-    st.rerun()
+col_reset_top, col_space_top, col_next_top = st.columns([1.0, 4.0, 2.2])
+
+with col_reset_top:
+    if st.button("🔄 Reiniciar", key="reiniciar_top"):
+        st.session_state.clear()
+        st.session_state.reset_counter = 0
+        st.session_state.etapa = "formulario"
+        st.session_state.modo_acceso = None
+        st.rerun()
+
+top_next_placeholder = col_next_top.empty()
 
 
 # =========================
@@ -692,11 +987,7 @@ if st.session_state.modo_acceso == "tecnico":
     with st.container(border=True):
         st.markdown("## Base de datos actual")
 
-        st.dataframe(
-            df_herramientas,
-            use_container_width=True,
-            height=360
-        )
+        mostrar_tabla_clara(df_herramientas, height=360)
 
     st.divider()
 
@@ -780,125 +1071,158 @@ if st.session_state.modo_acceso == "tecnico":
 
 if st.session_state.etapa == "formulario":
 
-    with st.container(border=True):
+    tipo_vibracion = "Mano-brazo"
+    LIMITE = 100
+    VLE = 400
 
-        st.markdown("### Paso 1 · Datos de exposición")
+    # Bloque de confirmación por si intentan avanzar sin registrar horas
+    if st.session_state.pendiente_confirmacion:
+        with st.container(border=True):
+            mostrar_aviso(
+                "⚠️ **Aviso de datos incompletos:** No has introducido los tiempos de uso de las herramientas "
+                "(el tiempo total es de 0 horas). ¿Estás seguro de que deseas continuar con la evaluación?",
+                "warning"
+            )
+            col_c1, col_c2, _ = st.columns([1.5, 1.8, 4])
+            with col_c1:
+                if st.button("🔥 SÍ, CONTINUAR", key="confirmar_si_proceder"):
+                    st.session_state.pendiente_confirmacion = False
+                    guardar_y_calcular(st.session_state.tareas_temporales, tipo_vibracion, LIMITE, VLE)
+            with col_c2:
+                if st.button("❌ NO, VOLVER A REVISAR", key="confirmar_no_revisar"):
+                    st.session_state.pendiente_confirmacion = False
+                    st.rerun()
+        st.divider()
 
-        st.markdown(
-            '<p class="compact-text">Evalúa la exposición a vibraciones mano-brazo según el tiempo de uso y la aceleración estimada de las herramientas.</p>',
-            unsafe_allow_html=True
-        )
+    # Organización en pestañas limpias
+    tab1, tab2 = st.tabs(["📋 1. Datos de exposición", "🛠️ 2. Herramientas utilizadas"])
 
-        st.markdown("<div style='height: 2px;'></div>", unsafe_allow_html=True)
+    with tab1:
+        with st.container(border=True):
+            st.markdown("### Paso 1 · Datos de exposición")
+            st.markdown(
+                '<p class="compact-text">Evalúa la exposición a vibraciones mano-brazo según el tiempo de uso y la aceleración estimada de las herramientas.</p>',
+                unsafe_allow_html=True
+            )
+            st.markdown("<div style='height: 2px;'></div>", unsafe_allow_html=True)
 
-        tipo_vibracion = "Mano-brazo"
+            col_info1, col_info2, col_info3 = st.columns(3)
 
-        LIMITE = 100
-        VLE = 400
+            with col_info1:
+                mostrar_dato("Tipo de vibración", "Mano-brazo")
 
-        col_info1, col_info2, col_info3 = st.columns(3)
+            with col_info2:
+                mostrar_dato("Nivel de acción", "100 puntos", "metric-action")
 
-        with col_info1:
-            mostrar_dato("Tipo de vibración", "Mano-brazo")
+            with col_info3:
+                mostrar_dato("Valor límite", "400 puntos", "metric-limit")
+        
+        st.info("💡 Una vez revisados los límites de referencia, haz clic arriba en la pestaña **'2. Herramientas utilizadas'** para completar los datos.")
 
-        with col_info2:
-            mostrar_dato("Nivel de acción", "100 puntos", "metric-action")
+    with tab2:
+        df_filtrado = df_herramientas[df_herramientas["tipo"] == tipo_vibracion]
 
-        with col_info3:
-            mostrar_dato("Valor límite", "400 puntos", "metric-limit")
-
-    st.divider()
-
-    df_filtrado = df_herramientas[df_herramientas["tipo"] == tipo_vibracion]
-
-    if df_filtrado.empty:
-        st.error("No hay herramientas registradas para este tipo de vibración en herramientas.csv.")
-        st.stop()
-
-    with st.container(border=True):
-
-        st.markdown("### Paso 2 · Herramientas utilizadas")
-
-        num_tareas = st.number_input(
-            "¿Cuántas herramientas o equipos vas a utilizar?",
-            min_value=1,
-            step=1,
-            key=f"num_tareas_{st.session_state.reset_counter}"
-        )
-
-    tareas = []
-
-    for i in range(num_tareas):
+        if df_filtrado.empty:
+            st.error("No hay herramientas registradas para este tipo de vibración en herramientas.csv.")
+            st.stop()
 
         with st.container(border=True):
-
-            st.markdown(f"#### Operación {i + 1}")
-
-            herramientas_disponibles = df_filtrado["herramienta"].unique().tolist()
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-                herramienta = st.selectbox(
-                    f"Herramienta/equipo {i + 1}",
-                    herramientas_disponibles,
-                    key=f"herramienta_{i}_{st.session_state.reset_counter}"
+            st.markdown("### Paso 2 · Herramientas utilizadas")
+            col_cant_herramientas, _ = st.columns([1.5, 3.5])
+            with col_cant_herramientas:
+                num_tareas = st.number_input(
+                    "¿Cuántas herramientas o equipos vas a utilizar?",
+                    min_value=1,
+                    step=1,
+                    key=f"num_tareas_{st.session_state.reset_counter}"
                 )
 
-            situaciones_disponibles = df_filtrado[
-                df_filtrado["herramienta"] == herramienta
-            ]["situacion"].unique().tolist()
+        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
 
-            with col2:
-                situacion = st.selectbox(
-                    f"Situación de uso {i + 1}",
-                    situaciones_disponibles,
-                    key=f"situacion_{i}_{st.session_state.reset_counter}"
-                )
+        tareas = []
 
-            datos_herramienta = df_filtrado[
-                (df_filtrado["herramienta"] == herramienta) &
-                (df_filtrado["situacion"] == situacion)
-            ].iloc[0]
+        for i in range(num_tareas):
+            with st.container(border=True):
+                st.markdown(f"#### Operación {i + 1}")
+                herramientas_disponibles = df_filtrado["herramienta"].unique().tolist()
 
-            aceleracion = float(datos_herramienta["aceleracion"])
-            incertidumbre = float(datos_herramienta["incertidumbre"])
-            fuente = str(datos_herramienta["fuente"])
+                col1, col2, col3 = st.columns([2, 2, 1.2])
 
-            aceleracion_usada = aceleracion + incertidumbre
+                with col1:
+                    herramienta = st.selectbox(
+                        f"Herramienta/equipo {i + 1}",
+                        herramientas_disponibles,
+                        key=f"herramienta_{i}_{st.session_state.reset_counter}"
+                    )
 
-            tiempo = st.number_input(
-                f"Tiempo de uso operación {i + 1} (horas)",
-                min_value=0.0,
-                step=0.1,
-                key=f"tiempo_{i}_{st.session_state.reset_counter}"
-            )
+                situaciones_disponibles = df_filtrado[
+                    df_filtrado["herramienta"] == herramienta
+                ]["situacion"].unique().tolist()
 
-            k = 1
-            eje = "-"
+                with col2:
+                    situacion = st.selectbox(
+                        f"Situación de uso {i + 1}",
+                        situaciones_disponibles,
+                        key=f"situacion_{i}_{st.session_state.reset_counter}"
+                    )
 
-            tareas.append({
-                "nombre": herramienta,
-                "situacion": situacion,
-                "a_declarada": aceleracion,
-                "incertidumbre": incertidumbre,
-                "a": aceleracion_usada,
-                "fuente": fuente,
-                "t": tiempo,
-                "tipo": tipo_vibracion,
-                "eje": eje,
-                "k": k
-            })
+                datos_herramienta = df_filtrado[
+                    (df_filtrado["herramienta"] == herramienta) &
+                    (df_filtrado["situacion"] == situacion)
+                ].iloc[0]
 
-    st.divider()
+                aceleracion = float(datos_herramienta["aceleracion"])
+                incertidumbre = float(datos_herramienta["incertidumbre"])
+                fuente = str(datos_herramienta["fuente"])
+                aceleracion_usada = aceleracion + incertidumbre
 
-    if st.button("SIGUIENTE → CALCULAR EXPOSICIÓN"):
-        st.session_state["tareas_calculadas"] = tareas
-        st.session_state["tipo_calculado"] = tipo_vibracion
-        st.session_state["limite_calculado"] = LIMITE
-        st.session_state["vle_calculado"] = VLE
-        st.session_state.etapa = "resultado"
-        st.rerun()
+                with col3:
+                    tiempo = st.number_input(
+                        f"Tiempo de uso (horas)",
+                        min_value=0.0,
+                        step=0.1,
+                        key=f"tiempo_{i}_{st.session_state.reset_counter}"
+                    )
+
+                k = 1
+                eje = "-"
+
+                tareas.append({
+                    "nombre": herramienta,
+                    "situacion": situacion,
+                    "a_declarada": aceleracion,
+                    "incertidumbre": incertidumbre,
+                    "a": aceleracion_usada,
+                    "fuente": fuente,
+                    "t": tiempo,
+                    "tipo": tipo_vibracion,
+                    "eje": eje,
+                    "k": k
+                })
+
+        st.divider()
+
+        with top_next_placeholder.container():
+            if st.button("SIGUIENTE → CALCULAR EXPOSICIÓN", key="siguiente_arriba"):
+                total_tiempo = sum(t["t"] for t in tareas)
+                if total_tiempo == 0.0:
+                    st.session_state.tareas_temporales = tareas
+                    st.session_state.pendiente_confirmacion = True
+                    st.rerun()
+                else:
+                    guardar_y_calcular(tareas, tipo_vibracion, LIMITE, VLE)
+
+        if num_tareas > 1:
+            col_btn_bottom, col_btn_space = st.columns([1.55, 5])
+            with col_btn_bottom:
+                if st.button("SIGUIENTE → CALCULAR EXPOSICIÓN", key="siguiente_abajo"):
+                    total_tiempo = sum(t["t"] for t in tareas)
+                    if total_tiempo == 0.0:
+                        st.session_state.tareas_temporales = tareas
+                        st.session_state.pendiente_confirmacion = True
+                        st.rerun()
+                    else:
+                        guardar_y_calcular(tareas, tipo_vibracion, LIMITE, VLE)
 
 
 
@@ -915,7 +1239,7 @@ elif st.session_state.etapa == "resultado":
 
     with st.container(border=True):
 
-        st.markdown("### Paso 3 · Resultado inicial")
+        st.markdown("### Resultado inicial")
 
         puntos_totales = 0
 
@@ -945,7 +1269,7 @@ elif st.session_state.etapa == "resultado":
                 str(tarea["a_declarada"]),
                 str(tarea["incertidumbre"]),
                 str(tarea["a"]),
-                str(tarea["t"]),
+                str(round(tarea["t"], 2)),
                 str(round(puntos, 2))
             ])
 
@@ -972,29 +1296,25 @@ elif st.session_state.etapa == "resultado":
             mostrar_dato("VLE", VLE, "metric-limit")
 
         if puntos_totales >= VLE:
-            st.error("Resultado inicial: se supera el valor límite de exposición.")
+            mostrar_aviso("Resultado inicial: se supera el valor límite de exposición.", "error")
             estado = "Se supera el valor límite de exposición (VLE)."
         elif puntos_totales >= LIMITE:
-            st.warning("Resultado inicial: se supera el nivel de acción.")
+            mostrar_aviso("Resultado inicial: se supera el nivel de acción.", "warning")
             estado = "Se supera el nivel de acción."
         else:
-            st.success("Resultado inicial: nivel seguro.")
+            mostrar_aviso("Resultado inicial: nivel seguro.", "success")
             estado = "Nivel seguro."
 
         st.session_state["estado"] = estado
 
     st.divider()
 
-    with st.container(border=True):
-
-        st.markdown("### Desglose por herramienta")
+    with st.expander("📋 Ver desglose por herramienta"):
 
         df_resumen = pd.DataFrame(filas_resumen)
 
-        st.dataframe(
+        mostrar_tabla_clara(
             df_resumen,
-            use_container_width=True,
-            hide_index=True,
             height=min(260, 80 + 35 * len(df_resumen))
         )
 
@@ -1013,21 +1333,22 @@ elif st.session_state.etapa == "resultado":
 
     st.divider()
 
-    col1, col2 = st.columns(2)
+    col_anterior, col_espacio, col_ajustar = st.columns([1.3, 5.8, 1.8])
 
-    with col1:
-        if st.button("← ANTERIOR"):
+    with col_anterior:
+        if st.button("← ANTERIOR", key="btn_anterior_resultado"):
             st.session_state.etapa = "formulario"
             st.rerun()
 
-    with col2:
-        if st.button("AJUSTAR EXPOSICIÓN →"):
+    with col_ajustar:
+        if st.button("AJUSTAR EXPOSICIÓN →", key="btn_ajustar_resultado"):
             st.session_state.etapa = "ajuste"
+            st.session_state.ajuste_confirmacion = False  # Forzamos a ver la pantalla de decisión primero
             st.rerun()
 
 
 # =========================
-# ETAPA 3: AJUSTE DE EXPOSICIÓN
+# ETAPA 3: AJUSTE DE EXPOSICIÓN (CON FLUJO SECUENCIAL)
 # =========================
 
 elif st.session_state.etapa == "ajuste":
@@ -1038,208 +1359,199 @@ elif st.session_state.etapa == "ajuste":
     VLE = st.session_state["vle_calculado"]
     puntos_totales = st.session_state["puntos_totales"]
 
-    with st.container(border=True):
-
-        st.markdown("### Paso 4 · Ajuste de exposición")
-
-        st.markdown("""
-        Selecciona cómo quieres modificar la exposición:
-
-        - **Modificar exposición total**: la aplicación reparte la reducción entre todas las herramientas según su contribución al total.
-        - **Modificar herramienta individual**: puedes ajustar manualmente los puntos de cada herramienta y ver cómo cambia el total.
-        """)
-
-        tipo_ajuste = st.radio(
-            "Tipo de ajuste",
-            [
-                "Modificar exposición total",
-                "Modificar herramienta individual"
-            ],
-            horizontal=True
-        )
-
-    st.divider()
-
-    if tipo_ajuste == "Modificar exposición total":
-
+    # SUB-ETAPA A: Pantalla de decisión limpia (Igual que tu imagen)
+    if not st.session_state.ajuste_confirmacion:
         with st.container(border=True):
-
-            st.markdown("### Ajuste por exposición total")
-
+            st.markdown("### Ajuste de exposición")
             st.markdown("""
-            Selecciona el objetivo de puntos totales.  
-            La reducción se aplicará proporcionalmente según el peso de cada herramienta en el total.
+            Selecciona cómo quieres modificar la exposición:
+
+            - **Modificar exposición total**: la aplicación reparte la reducción entre todas las herramientas según su contribución al total.
+            - **Modificar herramienta individual**: puedes ajustar manualmente los puntos de cada herramienta y ver cómo cambia el total.
             """)
 
-            objetivo = st.slider(
-                "Objetivo de puntos totales",
-                min_value=0,
-                max_value=max(int(round(puntos_totales)), 1),
-                value=min(LIMITE, max(int(round(puntos_totales)), 1)),
-                step=1,
-                key="slider_objetivo"
+            tipo_ajuste = st.radio(
+                "Tipo de ajuste",
+                [
+                    "Modificar exposición total",
+                    "Modificar herramienta individual"
+                ],
+                horizontal=True
             )
-
-            col_m1, col_m2, col_m3 = st.columns(3)
-
-            with col_m1:
-                mostrar_dato("Total inicial", round(puntos_totales, 2))
-
-            with col_m2:
-                mostrar_dato("Objetivo seleccionado", objetivo)
-
-            with col_m3:
-                diferencia = puntos_totales - objetivo
-                mostrar_dato("Reducción necesaria", round(diferencia, 2), "metric-action")
 
             st.divider()
 
-            col1, col2 = st.columns(2)
-
-            with col1:
-                if st.button("← ANTERIOR"):
+            col_anterior, col_espacio, col_configurar = st.columns([1.3, 5.5, 2.2])
+            with col_anterior:
+                if st.button("← ANTERIOR", key="btn_regresar_a_paso3"):
                     st.session_state.etapa = "resultado"
                     st.rerun()
-
-            with col2:
-                if st.button("APLICAR AJUSTE →"):
-
-                    tareas_ajustadas, nuevo_total, pasos_reduccion = aplicar_objetivo_global(
-                        tareas,
-                        objetivo,
-                        LIMITE,
-                        VLE
-                    )
-
-                    st.session_state["pasos_reduccion"] = pasos_reduccion
-                    st.session_state["objetivo"] = objetivo
-                    st.session_state["tareas_ajustadas"] = tareas_ajustadas
-                    st.session_state["nuevo_total"] = nuevo_total
-                    st.session_state.etapa = "ajustada"
+            with col_configurar:
+                if st.button("CONFIGURAR AJUSTE DE TIEMPOS →", key="btn_confirmar_seleccion_metodo"):
+                    st.session_state.tipo_ajuste_seleccionado = tipo_ajuste
+                    st.session_state.ajuste_confirmacion = True
                     st.rerun()
 
+    # SUB-ETAPA B: Pantalla operativa con los Sliders desplegados
     else:
+        if st.session_state.tipo_ajuste_seleccionado == "Modificar exposición total":
+            with st.container(border=True):
+                st.markdown("### Ajuste por exposición total")
+                st.markdown("""
+                Selecciona el objetivo de puntos totales.  
+                La reducción se aplicará proporcionalmente según el peso de cada herramienta en el total.
+                """)
 
-        with st.container(border=True):
-
-            st.markdown("### Ajuste por herramienta individual")
-
-            st.markdown("""
-            Modifica los puntos objetivo de cada herramienta.  
-            El total se recalcula teniendo en cuenta todos los cambios realizados.
-            """)
-
-            tareas_individuales = []
-            nuevo_total_individual = 0
-            pasos_individuales = []
-
-            for i, tarea in enumerate(tareas):
-
-                puntos_actuales = calcular_puntos(tarea)
-
-                objetivo_herramienta = st.slider(
-                    f"{tarea['nombre']} · {tarea['situacion']}",
+                objetivo = st.slider(
+                    "Objetivo de puntos totales",
                     min_value=0,
-                    max_value=max(int(round(puntos_actuales * 1.5)), 1),
-                    value=int(round(puntos_actuales)),
+                    max_value=max(int(round(puntos_totales)), 1),
+                    value=min(LIMITE, max(int(round(puntos_totales)), 1)),
                     step=1,
-                    key=f"slider_individual_{i}"
+                    key="slider_objetivo"
                 )
 
-                if puntos_actuales > 0:
-                    nuevo_tiempo = tarea["t"] * (objetivo_herramienta / puntos_actuales)
+                col_m1, col_m2, col_m3 = st.columns(3)
+
+                with col_m1:
+                    mostrar_dato("Total inicial", round(puntos_totales, 2))
+
+                with col_m2:
+                    mostrar_dato("Objetivo seleccionado", objetivo)
+
+                with col_m3:
+                    diferencia = puntos_totales - objetivo
+                    mostrar_dato("Reducción necesaria", round(diferencia, 2), "metric-action")
+
+                st.divider()
+
+                col_anterior, col_espacio, col_aplicar = st.columns([1.3, 5.8, 1.7])
+                with col_anterior:
+                    if st.button("← ANTERIOR", key="btn_ant_total_inner"):
+                        st.session_state.ajuste_confirmacion = False  # Regresa a la decisión de método
+                        st.rerun()
+
+                with col_aplicar:
+                    if st.button("APLICAR AJUSTE →", key="btn_apli_total_inner"):
+                        tareas_ajustadas, nuevo_total, pasos_reduccion = aplicar_objetivo_global(
+                            tareas,
+                            objetivo,
+                            LIMITE,
+                            VLE
+                        )
+                        st.session_state["pasos_reduccion"] = pasos_reduccion
+                        st.session_state["objetivo"] = objetivo
+                        st.session_state["tareas_ajustadas"] = tareas_ajustadas
+                        st.session_state["nuevo_total"] = nuevo_total
+                        st.session_state.etapa = "ajustada"
+                        st.rerun()
+
+        else:
+            with st.container(border=True):
+                st.markdown("### Ajuste por herramienta individual")
+                st.markdown("""
+                Modifica los puntos objetivo de cada herramienta.  
+                El total se recalcula teniendo en cuenta todos los cambios realizados.
+                """)
+
+                tareas_individuales = []
+                nuevo_total_individual = 0
+                pasos_individuales = []
+
+                for i, tarea in enumerate(tareas):
+                    puntos_actuales = calcular_puntos(tarea)
+
+                    objetivo_herramienta = st.slider(
+                        f"{tarea['nombre']} · {tarea['situacion']}",
+                        min_value=0,
+                        max_value=max(int(round(puntos_actuales * 1.5)), 1),
+                        value=int(round(puntos_actuales)),
+                        step=1,
+                        key=f"slider_individual_{i}"
+                    )
+
+                    if puntos_actuales > 0:
+                        nuevo_tiempo = tarea["t"] * (objetivo_herramienta / puntos_actuales)
+                    else:
+                        nuevo_tiempo = 0
+
+                    nueva_tarea = tarea.copy()
+                    nueva_tarea["t_original"] = tarea["t"]
+                    nueva_tarea["puntos_originales"] = puntos_actuales
+                    nueva_tarea["t"] = nuevo_tiempo
+                    nueva_tarea["puntos_ajustados"] = calcular_puntos(nueva_tarea)
+
+                    nuevo_total_individual += nueva_tarea["puntos_ajustados"]
+                    tareas_individuales.append(nueva_tarea)
+
+                    pasos_individuales.append(
+                        f"{tarea['nombre']} ({tarea['situacion']}): "
+                        f"{round(puntos_actuales, 2)} puntos → "
+                        f"{round(nueva_tarea['puntos_ajustados'], 2)} puntos | "
+                        f"{round(tarea['t'], 2)} h → {round(nueva_tarea['t'], 2)} h"
+                    )
+
+                st.divider()
+
+                col_i1, col_i2, col_i3 = st.columns(3)
+
+                with col_i1:
+                    mostrar_dato("Total inicial", round(puntos_totales, 2))
+
+                with col_i2:
+                    mostrar_dato("Nuevo total estimado", round(nuevo_total_individual, 2))
+
+                with col_i3:
+                    mostrar_dato(
+                        "Diferencia",
+                        round(nuevo_total_individual - puntos_totales, 2),
+                        "metric-action"
+                    )
+
+                if nuevo_total_individual >= VLE:
+                    mostrar_aviso("Con estos ajustes se supera el VLE.", "error")
+                elif nuevo_total_individual >= LIMITE:
+                    mostrar_aviso("Con estos ajustes se supera el nivel de acción.", "warning")
                 else:
-                    nuevo_tiempo = 0
-
-                nueva_tarea = tarea.copy()
-                nueva_tarea["t_original"] = tarea["t"]
-                nueva_tarea["puntos_originales"] = puntos_actuales
-                nueva_tarea["t"] = round(nuevo_tiempo, 2)
-                nueva_tarea["puntos_ajustados"] = calcular_puntos(nueva_tarea)
-
-                nuevo_total_individual += nueva_tarea["puntos_ajustados"]
-                tareas_individuales.append(nueva_tarea)
-
-                pasos_individuales.append(
-                    f"{tarea['nombre']} ({tarea['situacion']}): "
-                    f"{round(puntos_actuales, 2)} puntos → "
-                    f"{round(nueva_tarea['puntos_ajustados'], 2)} puntos | "
-                    f"{tarea['t']} h → {nueva_tarea['t']} h"
-                )
+                    mostrar_aviso("Con estos ajustes no se supera el nivel de acción.", "success")
 
             st.divider()
 
-            col_i1, col_i2, col_i3 = st.columns(3)
+            with st.container(border=True):
+                st.markdown("### Resumen de tiempos ajustados")
+                filas_individuales = []
 
-            with col_i1:
-                mostrar_dato("Total inicial", round(puntos_totales, 2))
+                for tarea in tareas_individuales:
+                    diferencia_tiempo = tarea["t"] - tarea["t_original"]
+                    filas_individuales.append({
+                        "Herramienta": tarea["nombre"],
+                        "Situación": tarea["situacion"],
+                        "Puntos iniciales": round(tarea["puntos_originales"], 2),
+                        "Puntos ajustados": round(tarea["puntos_ajustados"], 2),
+                        "Tiempo inicial (h)": tarea["t_original"],
+                        "Tiempo ajustado (h)": round(tarea["t"], 2),
+                        "Diferencia (h)": round(diferencia_tiempo, 2)
+                    })
 
-            with col_i2:
-                mostrar_dato("Nuevo total estimado", round(nuevo_total_individual, 2))
+                df_individual = pd.DataFrame(filas_individuales)
+                mostrar_tabla_clara(df_individual, height=min(260, 80 + 35 * len(df_individual)))
 
-            with col_i3:
-                mostrar_dato(
-                    "Diferencia",
-                    round(nuevo_total_individual - puntos_totales, 2),
-                    "metric-action"
-                )
+            st.divider()
 
-            if nuevo_total_individual >= VLE:
-                st.error("Con estos ajustes se supera el VLE.")
-            elif nuevo_total_individual >= LIMITE:
-                st.warning("Con estos ajustes se supera el nivel de acción.")
-            else:
-                st.success("Con estos ajustes no se supera el nivel de acción.")
+            col_anterior, col_espacio, col_aplicar = st.columns([1.3, 5.3, 2.3])
+            with col_anterior:
+                if st.button("← ANTERIOR", key="btn_ant_indiv_inner"):
+                    st.session_state.ajuste_confirmacion = False  # Regresa a la decisión de método
+                    st.rerun()
 
-        st.divider()
-
-        with st.container(border=True):
-
-            st.markdown("### Resumen de tiempos ajustados")
-
-            filas_individuales = []
-
-            for tarea in tareas_individuales:
-
-                diferencia_tiempo = tarea["t"] - tarea["t_original"]
-
-                filas_individuales.append({
-                    "Herramienta": tarea["nombre"],
-                    "Situación": tarea["situacion"],
-                    "Puntos iniciales": round(tarea["puntos_originales"], 2),
-                    "Puntos ajustados": round(tarea["puntos_ajustados"], 2),
-                    "Tiempo inicial (h)": tarea["t_original"],
-                    "Tiempo ajustado (h)": tarea["t"],
-                    "Diferencia (h)": round(diferencia_tiempo, 2)
-                })
-
-            df_individual = pd.DataFrame(filas_individuales)
-
-            st.dataframe(
-                df_individual,
-                use_container_width=True,
-                hide_index=True,
-                height=min(260, 80 + 35 * len(df_individual))
-            )
-
-        st.divider()
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            if st.button("← ANTERIOR"):
-                st.session_state.etapa = "resultado"
-                st.rerun()
-
-        with col2:
-            if st.button("APLICAR AJUSTE INDIVIDUAL →"):
-
-                st.session_state["pasos_reduccion"] = pasos_individuales
-                st.session_state["objetivo"] = round(nuevo_total_individual, 2)
-                st.session_state["tareas_ajustadas"] = tareas_individuales
-                st.session_state["nuevo_total"] = nuevo_total_individual
-                st.session_state.etapa = "ajustada"
-                st.rerun()
+            with col_aplicar:
+                if st.button("APLICAR AJUSTE INDIVIDUAL →", key="btn_apli_indiv_inner"):
+                    st.session_state["pasos_reduccion"] = pasos_individuales
+                    st.session_state["objetivo"] = round(nuevo_total_individual, 2)
+                    st.session_state["tareas_ajustadas"] = tareas_individuales
+                    st.session_state["nuevo_total"] = nuevo_total_individual
+                    st.session_state.etapa = "ajustada"
+                    st.rerun()
 
 
 # =========================
@@ -1261,7 +1573,7 @@ elif st.session_state.etapa == "ajustada":
 
     with st.container(border=True):
 
-        st.markdown("### Paso 5 · Resultado ajustado")
+        st.markdown("### Resultado ajustado")
 
         col_a1, col_a2, col_a3 = st.columns(3)
 
@@ -1275,65 +1587,58 @@ elif st.session_state.etapa == "ajustada":
             mostrar_dato("Total ajustado", round(nuevo_total, 2))
 
         if nuevo_total >= VLE:
-            st.error("Con el ajuste seleccionado se supera el VLE.")
+            mostrar_aviso("Con el ajuste seleccionado se supera el VLE.", "error")
         elif nuevo_total >= LIMITE:
-            st.warning("Con el ajuste seleccionado se supera el nivel de acción.")
+            mostrar_aviso("Con el ajuste seleccionado se supera el nivel de acción.", "warning")
         else:
-            st.success("Con el ajuste seleccionado no se supera el nivel de acción.")
+            mostrar_aviso("Con el ajuste seleccionado no se supera el nivel de acción.", "success")
+
+    # Se preparan los datos de la tabla, pero se muestran en desplegable
+    # para que la pantalla de resultado ajustado quede más compacta.
+    filas_tabla_ajustada = [[
+        "Herramienta/equipo",
+        "Situación",
+        "Tiempo inicial (h)",
+        "Tiempo ajustado (h)",
+        "Puntos ajustados"
+    ]]
+
+    filas_ajustadas_resumen = []
+
+    for tarea in tareas_ajustadas:
+        puntos_ajustados = calcular_puntos(tarea)
+
+        filas_ajustadas_resumen.append({
+            "Herramienta": tarea["nombre"],
+            "Situación": tarea["situacion"],
+            "Tiempo inicial (h)": tarea["t_original"],
+            "Tiempo ajustado (h)": round(tarea["t"], 2),
+            "Puntos ajustados": round(puntos_ajustados, 2)
+        })
+
+        filas_tabla_ajustada.append([
+            tarea["nombre"],
+            tarea["situacion"],
+            str(tarea["t_original"]),
+            str(round(tarea["t"], 2)),
+            str(round(puntos_ajustados, 2))
+        ])
+
+    df_ajustado = pd.DataFrame(filas_ajustadas_resumen)
 
     st.divider()
 
-    with st.container(border=True):
-
-        st.markdown("### Nuevos tiempos propuestos")
-
-        filas_tabla_ajustada = [[
-            "Herramienta/equipo",
-            "Situación",
-            "Tiempo inicial (h)",
-            "Tiempo ajustado (h)",
-            "Puntos ajustados"
-        ]]
-
-        filas_ajustadas_resumen = []
-
-        for tarea in tareas_ajustadas:
-            puntos_ajustados = calcular_puntos(tarea)
-
-            filas_ajustadas_resumen.append({
-                "Herramienta": tarea["nombre"],
-                "Situación": tarea["situacion"],
-                "Tiempo inicial (h)": tarea["t_original"],
-                "Tiempo ajustado (h)": tarea["t"],
-                "Puntos ajustados": round(puntos_ajustados, 2)
-            })
-
-            filas_tabla_ajustada.append([
-                tarea["nombre"],
-                tarea["situacion"],
-                str(tarea["t_original"]),
-                str(tarea["t"]),
-                str(round(puntos_ajustados, 2))
-            ])
-
-        df_ajustado = pd.DataFrame(filas_ajustadas_resumen)
-
-        st.dataframe(
+    with st.expander("🕒 Ver nuevos tiempos propuestos"):
+        mostrar_tabla_clara(
             df_ajustado,
-            use_container_width=True,
-            hide_index=True,
-            height=min(240, 80 + 35 * len(df_ajustado))
+            height=min(220, 75 + 35 * len(df_ajustado))
         )
 
-    st.divider()
-
-    with st.expander("Ver proceso de reducción aplicado"):
-
+    with st.expander("🔎 Ver proceso de reducción aplicado"):
         for paso in st.session_state["pasos_reduccion"]:
             st.write(paso)
 
     with st.expander("📊 Ver matriz ajustada"):
-
         fig_ajustada = crear_matriz_puntos(
             tareas_ajustadas,
             tipo_vibracion,
@@ -1376,10 +1681,10 @@ elif st.session_state.etapa == "ajustada":
             tarea["nombre"],
             tarea["situacion"],
             str(tarea["t_original"]),
-            str(tarea["t"]),
+            str(round(tarea["t"], 2)),
             str(round(puntos_iniciales, 2)),
             str(round(puntos_ajustados, 2))
-        ])
+            ])
 
     pdf = generar_pdf(
         "Resultado de evaluación",
@@ -1388,29 +1693,27 @@ elif st.session_state.etapa == "ajustada":
         conclusion_pdf
     )
 
-    with open(pdf, "rb") as file:
-        st.download_button(
-            label="📄 DESCARGAR INFORME EN PDF",
-            data=file,
-            file_name="informe_vibraciones.pdf",
-            mime="application/pdf"
-        )
+    col_anterior, col_descarga, col_nueva = st.columns([1.35, 2.2, 1.7])
 
-    st.divider()
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        if st.button("← ANTERIOR"):
+    with col_anterior:
+        if st.button("← ANTERIOR", key="btn_ant_final"):
             st.session_state.etapa = "ajuste"
+            st.session_state.ajuste_confirmacion = True  # Regresa directo a la pantalla operativa con sliders
             st.rerun()
 
-    with col2:
-        if st.button("NUEVA EVALUACIÓN"):
+    with col_descarga:
+        with open(pdf, "rb") as file:
+            st.download_button(
+                label="📄 DESCARGAR INFORME EN PDF",
+                data=file,
+                file_name="informe_vibraciones.pdf",
+                mime="application/pdf"
+            )
+
+    with col_nueva:
+        if st.button("NUEVA EVALUACIÓN", key="btn_nueva_evaluacion_final"):
             st.session_state.clear()
             st.session_state.reset_counter = 0
             st.session_state.etapa = "formulario"
             st.session_state.modo_acceso = None
             st.rerun()
-
-
