@@ -184,7 +184,8 @@ st.markdown("""
 
     /* Botones */
     div.stButton > button,
-    div[data-testid="stDownloadButton"] > button {
+    div[data-testid="stDownloadButton"] > button,
+    div[data-testid="stFormSubmitButton"] > button {
         background-color: #0b73b7 !important;
         color: white !important;
         font-weight: bold !important;
@@ -197,7 +198,26 @@ st.markdown("""
     }
 
     div.stButton > button:hover,
-    div[data-testid="stDownloadButton"] > button:hover {
+    div[data-testid="stDownloadButton"] > button:hover,
+    div[data-testid="stFormSubmitButton"] > button:hover {
+        background-color: #095f96 !important;
+        color: white !important;
+    }
+
+    /* Botones de formularios: mantener azul y texto blanco */
+    div[data-testid="stFormSubmitButton"] > button {
+        background-color: #0b73b7 !important;
+        color: white !important;
+        font-weight: bold !important;
+        border-radius: 7px !important;
+        height: 2.45em;
+        min-width: 210px;
+        border: none !important;
+        padding: 0.25rem 0.85rem;
+        font-size: 0.92rem;
+    }
+
+    div[data-testid="stFormSubmitButton"] > button:hover {
         background-color: #095f96 !important;
         color: white !important;
     }
@@ -982,85 +1002,103 @@ top_next_placeholder = col_next_top.empty()
 
 if st.session_state.modo_acceso == "tecnico":
 
-    st.title("🧑‍💼 Panel técnico de prevención")
+    col_titulo_tecnico, col_cerrar_tecnico = st.columns([5.8, 1.2])
 
-    with st.container(border=True):
-        st.markdown("## Base de datos actual")
+    with col_titulo_tecnico:
+        st.title(" Panel técnico de prevención")
 
-        mostrar_tabla_clara(df_herramientas, height=360)
+    with col_cerrar_tecnico:
+        st.markdown("<div style='height: 0.45rem;'></div>", unsafe_allow_html=True)
+        if st.button("Cerrar sesión", key="cerrar_sesion_tecnico_top"):
+            st.session_state.clear()
+            st.session_state.reset_counter = 0
+            st.session_state.etapa = "formulario"
+            st.session_state.modo_acceso = None
+            st.rerun()
 
-    st.divider()
+    with st.expander("➕ Añadir nueva herramienta", expanded=False):
 
-    with st.container(border=True):
-
-        st.markdown("## Añadir nueva herramienta")
+        st.markdown(
+            '<p class="compact-text">Completa los datos de la nueva herramienta y pulsa <b>GUARDAR HERRAMIENTA</b>. '
+            'Al guardarla, se incorporará automáticamente a la base de datos inferior.</p>',
+            unsafe_allow_html=True
+        )
 
         with st.form("form_nueva_herramienta"):
 
-            nueva_herramienta = st.text_input("Herramienta")
+            col_form1, col_form2 = st.columns(2)
 
-            nueva_situacion = st.text_input("Situación")
+            with col_form1:
+                nueva_herramienta = st.text_input("Herramienta")
+
+            with col_form2:
+                nueva_situacion = st.text_input("Situación")
 
             nuevo_tipo = "Mano-brazo"
-
             st.info("Todas las herramientas añadidas serán de tipo Mano-brazo")
 
-            nueva_aceleracion = st.number_input(
-                "Aceleración (m/s²)",
-                min_value=0.0,
-                step=0.1
-            )
+            col_form3, col_form4, col_form5 = st.columns([1.2, 1.2, 2.0])
 
-            nueva_incertidumbre = st.number_input(
-                "Incertidumbre",
-                min_value=0.0,
-                step=0.1
-            )
+            with col_form3:
+                nueva_aceleracion = st.number_input(
+                    "Aceleración (m/s²)",
+                    min_value=0.0,
+                    step=0.1
+                )
 
-            nuevo_origen = st.selectbox(
-                "Origen de los datos",
-                [
-                    "Manual de instrucciones",
-                    "Base de datos",
-                    "Medición propia"
-                ]
-            )
+            with col_form4:
+                nueva_incertidumbre = st.number_input(
+                    "Incertidumbre",
+                    min_value=0.0,
+                    step=0.1
+                )
+
+            with col_form5:
+                nuevo_origen = st.selectbox(
+                    "Origen de los datos",
+                    [
+                        "Manual de instrucciones",
+                        "Base de datos",
+                        "Medición propia"
+                    ]
+                )
 
             nueva_fuente = st.text_input("Fuente")
 
-            guardar = st.form_submit_button("Guardar herramienta")
+            col_guardar, col_guardar_espacio = st.columns([1.45, 5.0])
+            with col_guardar:
+                guardar = st.form_submit_button("GUARDAR HERRAMIENTA")
 
             if guardar:
 
-                nueva_fila = {
-                    "herramienta": nueva_herramienta,
-                    "situacion": nueva_situacion,
-                    "tipo": nuevo_tipo,
-                    "aceleracion": nueva_aceleracion,
-                    "incertidumbre": nueva_incertidumbre,
-                    "origen": nuevo_origen,
-                    "fuente": nueva_fuente
-                }
+                if nueva_herramienta.strip() == "" or nueva_situacion.strip() == "" or nueva_fuente.strip() == "":
+                    st.warning("Completa herramienta, situación y fuente antes de guardar.")
+                else:
+                    nueva_fila = {
+                        "herramienta": nueva_herramienta,
+                        "situacion": nueva_situacion,
+                        "tipo": nuevo_tipo,
+                        "aceleracion": nueva_aceleracion,
+                        "incertidumbre": nueva_incertidumbre,
+                        "origen": nuevo_origen,
+                        "fuente": nueva_fuente
+                    }
 
-                df_herramientas.loc[len(df_herramientas)] = nueva_fila
+                    df_herramientas.loc[len(df_herramientas)] = nueva_fila
 
-                df_herramientas.to_csv(
-                    "herramientas.csv",
-                    index=False
-                )
+                    df_herramientas.to_csv(
+                        "herramientas.csv",
+                        index=False
+                    )
 
-                st.success("Herramienta guardada correctamente")
-
-                st.rerun()
+                    st.success("Herramienta guardada correctamente")
+                    st.rerun()
 
     st.divider()
 
-    if st.button("Cerrar sesión"):
-        st.session_state.clear()
-        st.session_state.reset_counter = 0
-        st.session_state.etapa = "formulario"
-        st.session_state.modo_acceso = None
-        st.rerun()
+    with st.container(border=True):
+        st.markdown("## Base de datos actual")
+        mostrar_tabla_clara(df_herramientas, height=255)
 
     st.stop()
 
