@@ -356,13 +356,13 @@ st.markdown("""
     }
 
     .alert-error-custom {
-        background-color: #fee2e2 !important;
-        border: 1.5px solid #ef4444 !important;
-        color: #7f1d1d !important;
+        background-color: #ff3b3b !important;
+        border: 2px solid #cc0000 !important;
+        color: #ffffff !important;
         padding: 0.85rem 1rem !important;
         border-radius: 8px !important;
         font-size: 0.95rem !important;
-        font-weight: 500 !important;
+        font-weight: 700 !important;
         margin-top: 0.5rem !important;
         margin-bottom: 0.4rem !important;
     }
@@ -456,6 +456,7 @@ st.markdown("""
         margin-top: 0.4rem !important;
     }
 
+
     /* DISEÑO DE ACORDEONES EXPANDERS */
     div[data-testid="stExpander"], div[class*="stExpander"] {
         border: 2.5px solid #000000 !important;
@@ -518,6 +519,9 @@ df_herramientas = pd.read_csv("herramientas.csv")
 
 if "origen" not in df_herramientas.columns:
     df_herramientas["origen"] = "Manual de instrucciones"
+
+if "factor_correccion" not in df_herramientas.columns:
+    df_herramientas["factor_correccion"] = 1.0
 
 
 # =========================
@@ -621,6 +625,73 @@ def mostrar_tabla_clara(df, height=240):
     )
 
 
+def obtener_color_por_puntos(puntos):
+    """Devuelve color y texto según el nivel de puntos de exposición."""
+    if puntos >= 400:
+        return "#ff3b3b", "Supera el valor límite"
+    elif puntos >= 100:
+        return "#ff9800", "Supera el nivel de acción"
+    else:
+        return "#1fa324", "Nivel seguro"
+
+
+def aplicar_color_slider(key_slider, color):
+    """Colorea el punto por completo (sólido) y dibuja una única línea horizontal negra limpia."""
+    st.markdown(
+        f"""
+        <style>
+        /* 1. Punto del slider (completamente SÓLIDO y relleno con su color dinámico) */
+        .st-key-{key_slider} [data-baseweb="slider"] [role="slider"] {{
+            background-color: {color} !important;
+            background: {color} !important;
+            border: 2px solid {color} !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3) !important;
+            border-radius: 50% !important;
+            width: 14px !important;
+            height: 14px !important;
+        }}
+
+        /* 2. Número superior con el color de su estado */
+        .st-key-{key_slider} [data-baseweb="slider"] [data-testid="stThumbValue"] {{
+            color: {color} !important;
+            font-weight: 800 !important;
+        }}
+
+        /* 3. Eliminación del bloque rojo activo y gris de fondo */
+        .st-key-{key_slider} [data-baseweb="slider"] div {{
+            background-image: none !important;
+        }}
+        
+        /* Protegemos el fondo del punto usando :not([role="slider"]) */
+        .st-key-{key_slider} [data-baseweb="slider"] > div:first-child div:not([role="slider"]) {{
+            background: transparent !important;
+            background-color: transparent !important;
+        }}
+
+        /* 4. Dibujar la línea negra continua de 2px en el carril principal */
+        .st-key-{key_slider} [data-baseweb="slider"] > div:first-child {{
+            background: linear-gradient(
+                to bottom, 
+                transparent calc(50% - 1px), 
+                #000000 calc(50% - 1px), 
+                #000000 calc(50% + 1px), 
+                transparent calc(50% + 1px)
+            ) !important;
+            padding: 8px 0 !important;
+        }}
+
+        /* 5. Contenedor inferior de los números (0 y 147) 100% transparente */
+        .st-key-{key_slider} [data-baseweb="slider"] > div:nth-child(2),
+        .st-key-{key_slider} [data-baseweb="slider"] > div:nth-child(2) div {{
+            background: transparent !important;
+            background-color: transparent !important;
+            background-image: none !important;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 def guardar_y_calcular(tareas, tipo_vibracion, LIMITE, VLE):
     st.session_state["tareas_calculadas"] = tareas
     st.session_state["tipo_calculado"] = tipo_vibracion
@@ -707,24 +778,38 @@ def aplicar_objetivo_global(tareas, objetivo, LIMITE, VLE):
 
 
 # =========================
-# MATRIZ
+# MATRIZ OPTIMIZADA
 # =========================
 
 def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
-    tiempos = np.arange(0.5, 8.5, 0.5)
-
+    # Desplazamos la rejilla base horizontal a 0.1 con paso 0.5 para albergar tiempos cortos
+    tiempos = np.arange(0.1, 8.6, 0.5)
     referencia = 2.5
-    aceleraciones = np.arange(1, 10.0, 0.5)
+
+    puntos_totales_previos = sum(calcular_puntos(t) for t in tareas)
+    tiempo_total_previo = sum(t["t"] for t in tareas)
+
+    aceleracion_total_equivalente = 0
+
+    if tiempo_total_previo > 0:
+        aceleracion_total_equivalente = basePath = referencia * np.sqrt(
+            (puntos_totales_previos * 8) / (100 * tiempo_total_previo)
+        )
+
+    aceleracion_max_herramientas = max(
+        [float(t["a"]) for t in tareas] + [10.0, aceleracion_total_equivalente]
+    )
+
+    aceleracion_max_grafico = np.ceil((aceleracion_max_herramientas + 1.0) * 2) / 2
+    aceleraciones = np.arange(1, aceleracion_max_grafico + 0.5, 0.5)
 
     z = []
 
     for a in aceleraciones:
         fila = []
-
         for t in tiempos:
             puntos = ((a / referencia) ** 2) * (t / 8) * 100
             fila.append(round(puntos, 0))
-
         z.append(fila)
 
     fig = go.Figure()
@@ -758,7 +843,6 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
         tiempo_total += tarea["t"]
 
         aceleracion_visual = tarea["a"]
-
         nombre_corto = tarea["nombre"]
 
         if len(nombre_corto) > 18:
@@ -776,15 +860,16 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
                 line=dict(width=2, color="white")
             ),
             text=[texto_point],
-            textposition="top center",
-            textfont=dict(size=10, color="black"),
+            textposition="top right", 
+            textfont=dict(size=10, color="#085283"), # Modificación: Texto de herramientas en azul legible
+            cliponaxis=False,
             name=tarea["nombre"],
             showlegend=False,
             hovertemplate=(
                 f"{tarea['nombre']}<br>"
                 f"Situación: {tarea['situacion']}<br>"
                 f"Tiempo: {tarea['t']} h<br>"
-                f"Aceleración usada: {tarea['a']} m/s²<br>"
+                f"Aceleración corregida: {round(tarea['a'], 2)} m/s²<br>"
                 f"Puntos: {round(puntos, 1)}"
                 "<extra></extra>"
             )
@@ -801,8 +886,9 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
             mode="markers+text",
             marker=dict(size=28, color="black", line=dict(width=4, color="white")),
             text=[f"TOTAL<br>{round(puntos_totales, 1)} p"],
-            textposition="bottom center",
-            textfont=dict(size=11, color="black"),
+            textposition="bottom right",
+            textfont=dict(size=11, color="#085283"), # Modificación: Texto de la puntuación TOTAL en azul legible
+            cliponaxis=False,
             name="Total",
             showlegend=False,
             hovertemplate=f"Total combinado: {round(puntos_totales, 1)} puntos<extra></extra>"
@@ -816,25 +902,26 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
             font=dict(color="black", size=18)
         ),
         xaxis_title="Tiempo de exposición (h)",
-        yaxis_title="Aceleración equivalente (m/s²)",
+        yaxis_title="Aceleración corregida (m/s²)",
         width=950,
         height=430,
         showlegend=False,
         plot_bgcolor="white",
         paper_bgcolor="white",
         font=dict(size=11, color="black"),
-        margin=dict(l=35, r=15, t=50, b=40)
+        margin=dict(l=45, r=50, t=50, b=40)
     )
 
     fig.update_xaxes(
         tickmode="array",
-        tickvals=list(tiempos),
+        tickvals=[0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0], 
         tickfont=dict(color="black"),
         title_font=dict(color="black"),
         showgrid=True,
         gridcolor="rgba(0,0,0,0.15)",
         linecolor="black",
-        zerolinecolor="black"
+        zerolinecolor="black",
+        range=[0, 8.5] 
     )
 
     fig.update_yaxes(
@@ -843,7 +930,8 @@ def crear_matriz_puntos(tareas, tipo_vibracion, vle, titulo):
         showgrid=True,
         gridcolor="rgba(0,0,0,0.15)",
         linecolor="black",
-        zerolinecolor="black"
+        zerolinecolor="black",
+        range=[0, aceleracion_max_grafico]
     )
 
     return fig
@@ -1016,6 +1104,14 @@ if st.session_state.modo_acceso == "tecnico":
             st.session_state.modo_acceso = None
             st.rerun()
 
+    if st.session_state.get("herramienta_guardada_ok", False):
+        st.success("Herramienta guardada correctamente.")
+        st.session_state.herramienta_guardada_ok = False
+
+    if st.session_state.get("herramienta_eliminada_ok", False):
+        st.success("Herramienta eliminada correctamente.")
+        st.session_state.herramienta_eliminada_ok = False
+
     with st.expander("➕ Añadir nueva herramienta", expanded=False):
 
         st.markdown(
@@ -1024,81 +1120,152 @@ if st.session_state.modo_acceso == "tecnico":
             unsafe_allow_html=True
         )
 
-        with st.form("form_nueva_herramienta"):
+        col_form1, col_form2 = st.columns(2)
 
-            col_form1, col_form2 = st.columns(2)
+        with col_form1:
+            nueva_herramienta = st.text_input("Herramienta", key="nueva_herramienta")
 
-            with col_form1:
-                nueva_herramienta = st.text_input("Herramienta")
+        with col_form2:
+            nueva_situacion = st.text_input("Situación", key="nueva_situacion")
 
-            with col_form2:
-                nueva_situacion = st.text_input("Situación")
+        nuevo_tipo = "Mano-brazo"
+        st.info("Todas las herramientas añadidas serán de tipo Mano-brazo")
 
-            nuevo_tipo = "Mano-brazo"
-            st.info("Todas las herramientas añadidas serán de tipo Mano-brazo")
+        col_form3, col_form4, col_form5 = st.columns([1.2, 1.2, 2.0])
 
-            col_form3, col_form4, col_form5 = st.columns([1.2, 1.2, 2.0])
+        with col_form3:
+            nueva_aceleracion = st.number_input(
+                "Aceleración (m/s²)",
+                min_value=0.0,
+                step=0.1,
+                key="nueva_aceleracion"
+            )
 
-            with col_form3:
-                nueva_aceleracion = st.number_input(
-                    "Aceleración (m/s²)",
-                    min_value=0.0,
-                    step=0.1
-                )
+        with col_form4:
+            nueva_incertidumbre = st.number_input(
+                "Incertidumbre",
+                min_value=0.0,
+                step=0.1,
+                key="nueva_incertidumbre"
+            )
 
-            with col_form4:
-                nueva_incertidumbre = st.number_input(
-                    "Incertidumbre",
-                    min_value=0.0,
-                    step=0.1
-                )
+        with col_form5:
+            nuevo_origen = st.selectbox(
+                "Origen de los datos",
+                [
+                    "Manual de instrucciones",
+                    "Base de datos",
+                    "Medición propia"
+                ],
+                key="nuevo_origen"
+            )
 
-            with col_form5:
-                nuevo_origen = st.selectbox(
-                    "Origen de los datos",
-                    [
-                        "Manual de instrucciones",
-                        "Base de datos",
-                        "Medición propia"
-                    ]
-                )
+        if nuevo_origen == "Manual de instrucciones":
+            aplicar_factor_correccion = st.checkbox(
+                "Aplicar factor de corrección",
+                value=False,
+                key="aplicar_factor_correccion"
+            )
 
-            nueva_fuente = st.text_input("Fuente")
+            if aplicar_factor_correccion:
+                col_factor, col_info_factor = st.columns([1.2, 3.5])
 
-            col_guardar, col_guardar_espacio = st.columns([1.45, 5.0])
-            with col_guardar:
-                guardar = st.form_submit_button("GUARDAR HERRAMIENTA")
-
-            if guardar:
-
-                if nueva_herramienta.strip() == "" or nueva_situacion.strip() == "" or nueva_fuente.strip() == "":
-                    st.warning("Completa herramienta, situación y fuente antes de guardar.")
-                else:
-                    nueva_fila = {
-                        "herramienta": nueva_herramienta,
-                        "situacion": nueva_situacion,
-                        "tipo": nuevo_tipo,
-                        "aceleracion": nueva_aceleracion,
-                        "incertidumbre": nueva_incertidumbre,
-                        "origen": nuevo_origen,
-                        "fuente": nueva_fuente
-                    }
-
-                    df_herramientas.loc[len(df_herramientas)] = nueva_fila
-
-                    df_herramientas.to_csv(
-                        "herramientas.csv",
-                        index=False
+                with col_factor:
+                    nuevo_factor_correccion = st.number_input(
+                        "Factor de corrección",
+                        min_value=0.0,
+                        value=1.0,
+                        step=0.1,
+                        key="nuevo_factor_correccion"
                     )
 
-                    st.success("Herramienta guardada correctamente")
-                    st.rerun()
+                with col_info_factor:
+                    st.info(
+                        "Se aplicará factor de corrección. "
+                        "Aceleración usada = (aceleración + incertidumbre) × factor de corrección."
+                    )
+            else:
+                nuevo_factor_correccion = 1.0
+                st.info(
+                    "No se aplica factor de corrección. "
+                    "Internamente se utilizará factor = 1."
+                )
+        else:
+            aplicar_factor_correccion = False
+            nuevo_factor_correccion = 1.0
+
+        nueva_fuente = st.text_input("Fuente", key="nueva_fuente")
+
+        col_guardar, col_guardar_espacio = st.columns([1.45, 5.0])
+        with col_guardar:
+            guardar = st.button("GUARDAR HERRAMIENTA", key="btn_guardar_herramienta")
+
+        if guardar:
+            if nueva_herramienta.strip() == "" or nueva_situacion.strip() == "" or nueva_fuente.strip() == "":
+                st.warning("Completa herramienta, situación y fuente antes de guardar.")
+            else:
+                nueva_fila = {
+                    "herramienta": nueva_herramienta,
+                    "situacion": nueva_situacion,
+                    "tipo": nuevo_tipo,
+                    "aceleracion": nueva_aceleracion,
+                    "incertidumbre": nueva_incertidumbre,
+                    "factor_correccion": nuevo_factor_correccion,
+                    "origen": nuevo_origen,
+                    "fuente": nueva_fuente
+                }
+
+                df_herramientas.loc[len(df_herramientas)] = nueva_fila
+
+                df_herramientas.to_csv(
+                    "herramientas.csv",
+                    index=False
+                )
+
+                st.session_state.herramienta_guardada_ok = True
+                st.rerun()
 
     st.divider()
 
     with st.container(border=True):
         st.markdown("## Base de datos actual")
         mostrar_tabla_clara(df_herramientas, height=255)
+
+    with st.expander("🗑️ Eliminar herramienta", expanded=False):
+        if df_herramientas.empty:
+            st.info("No hay herramientas registradas para eliminar.")
+        else:
+            st.markdown(
+                '<p class="compact-text">Selecciona la herramienta que quieres eliminar de la base de datos y pulsa <b>ELIMINAR HERRAMIENTA</b>.</p>',
+                unsafe_allow_html=True
+            )
+
+            indices_herramientas = df_herramientas.index.tolist()
+
+            def formato_herramienta(indice):
+                fila = df_herramientas.loc[indice]
+                return f"{fila['herramienta']} · {fila['situacion']} · {fila['origen']}"
+
+            indice_eliminar = st.selectbox(
+                "Herramienta a eliminar",
+                indices_herramientas,
+                format_func=formato_herramienta,
+                key="indice_herramienta_eliminar"
+            )
+
+            fila_eliminar = df_herramientas.loc[indice_eliminar]
+            st.warning(
+                f"Vas a eliminar: {fila_eliminar['herramienta']} · {fila_eliminar['situacion']}. "
+                "Esta acción actualizará el archivo herramientas.csv."
+            )
+
+            col_eliminar, col_eliminar_espacio = st.columns([1.45, 5.0])
+            with col_eliminar:
+                if st.button("ELIMINAR HERRAMIENTA", key="btn_eliminar_herramienta"):
+                    df_herramientas = df_herramientas.drop(indice_eliminar).reset_index(drop=True)
+                    df_herramientas.to_csv("herramientas.csv", index=False)
+                    st.session_state.herramienta_eliminada_ok = True
+                    st.rerun()
 
     st.stop()
 
@@ -1113,7 +1280,6 @@ if st.session_state.etapa == "formulario":
     LIMITE = 100
     VLE = 400
 
-    # Bloque de confirmación por si intentan avanzar sin registrar horas
     if st.session_state.pendiente_confirmacion:
         with st.container(border=True):
             mostrar_aviso(
@@ -1132,7 +1298,6 @@ if st.session_state.etapa == "formulario":
                     st.rerun()
         st.divider()
 
-    # Organización en pestañas limpias
     tab1, tab2 = st.tabs(["📋 1. Datos de exposición", "🛠️ 2. Herramientas utilizadas"])
 
     with tab1:
@@ -1211,8 +1376,24 @@ if st.session_state.etapa == "formulario":
 
                 aceleracion = float(datos_herramienta["aceleracion"])
                 incertidumbre = float(datos_herramienta["incertidumbre"])
+
+                if "origen" in datos_herramienta.index:
+                    origen_dato = str(datos_herramienta["origen"])
+                else:
+                    origen_dato = "Manual de instrucciones"
+
+                if origen_dato == "Manual de instrucciones":
+                    if "factor_correccion" in datos_herramienta.index:
+                        factor_correccion = float(datos_herramienta["factor_correccion"])
+                    else:
+                        factor_correccion = 1.0
+                    factor_correccion_mostrar = round(factor_correccion, 2)
+                else:
+                    factor_correccion = 1.0
+                    factor_correccion_mostrar = "No aplica"
+
                 fuente = str(datos_herramienta["fuente"])
-                aceleracion_usada = aceleracion + incertidumbre
+                aceleracion_usada = (aceleracion + incertidumbre) * factor_correccion
 
                 with col3:
                     tiempo = st.number_input(
@@ -1222,7 +1403,6 @@ if st.session_state.etapa == "formulario":
                         key=f"tiempo_{i}_{st.session_state.reset_counter}"
                     )
 
-                k = 1
                 eje = "-"
 
                 tareas.append({
@@ -1230,12 +1410,15 @@ if st.session_state.etapa == "formulario":
                     "situacion": situacion,
                     "a_declarada": aceleracion,
                     "incertidumbre": incertidumbre,
+                    "origen": origen_dato,
+                    "factor_correccion": factor_correccion,
+                    "factor_correccion_mostrar": factor_correccion_mostrar,
                     "a": aceleracion_usada,
                     "fuente": fuente,
                     "t": tiempo,
                     "tipo": tipo_vibracion,
                     "eje": eje,
-                    "k": k
+                    "k": factor_correccion
                 })
 
         st.divider()
@@ -1286,9 +1469,10 @@ elif st.session_state.etapa == "resultado":
             "Situación",
             "Tipo",
             "Eje",
-            "ah declarado",
-            "K",
-            "ah usado",
+            "Aceleración",
+            "Incertidumbre",
+            "Factor corrección",
+            "Aceleración corregida",
             "Tiempo inicial (h)",
             "Puntos iniciales"
         ]]
@@ -1306,7 +1490,8 @@ elif st.session_state.etapa == "resultado":
                 tarea["eje"],
                 str(tarea["a_declarada"]),
                 str(tarea["incertidumbre"]),
-                str(tarea["a"]),
+                str(tarea.get("factor_correccion_mostrar", tarea["factor_correccion"])),
+                str(round(tarea["a"], 2)),
                 str(round(tarea["t"], 2)),
                 str(round(puntos, 2))
             ])
@@ -1315,7 +1500,10 @@ elif st.session_state.etapa == "resultado":
                 "Herramienta": tarea["nombre"],
                 "Situación": tarea["situacion"],
                 "Tiempo (h)": tarea["t"],
-                "ah usado (m/s²)": tarea["a"],
+                "Aceleración (m/s²)": tarea["a_declarada"],
+                "Incertidumbre": tarea["incertidumbre"],
+                "Factor corrección": tarea.get("factor_correccion_mostrar", tarea["factor_correccion"]),
+                "Aceleración corregida (m/s²)": round(tarea["a"], 2),
                 "Puntos": round(puntos, 2)
             })
 
@@ -1381,7 +1569,7 @@ elif st.session_state.etapa == "resultado":
     with col_ajustar:
         if st.button("AJUSTAR EXPOSICIÓN →", key="btn_ajustar_resultado"):
             st.session_state.etapa = "ajuste"
-            st.session_state.ajuste_confirmacion = False  # Forzamos a ver la pantalla de decisión primero
+            st.session_state.ajuste_confirmacion = False  
             st.rerun()
 
 
@@ -1397,7 +1585,6 @@ elif st.session_state.etapa == "ajuste":
     VLE = st.session_state["vle_calculado"]
     puntos_totales = st.session_state["puntos_totales"]
 
-    # SUB-ETAPA A: Pantalla de decisión limpia (Igual que tu imagen)
     if not st.session_state.ajuste_confirmacion:
         with st.container(border=True):
             st.markdown("### Ajuste de exposición")
@@ -1430,7 +1617,6 @@ elif st.session_state.etapa == "ajuste":
                     st.session_state.ajuste_confirmacion = True
                     st.rerun()
 
-    # SUB-ETAPA B: Pantalla operativa con los Sliders desplegados
     else:
         if st.session_state.tipo_ajuste_seleccionado == "Modificar exposición total":
             with st.container(border=True):
@@ -1440,11 +1626,18 @@ elif st.session_state.etapa == "ajuste":
                 La reducción se aplicará proporcionalmente según el peso de cada herramienta en el total.
                 """)
 
+                valor_slider_total = st.session_state.get(
+                    "slider_objetivo",
+                    int(round(puntos_totales))
+                )
+                color_slider_total, _ = obtener_color_por_puntos(valor_slider_total)
+                aplicar_color_slider("slider_objetivo", color_slider_total)
+
                 objetivo = st.slider(
                     "Objetivo de puntos totales",
                     min_value=0,
                     max_value=max(int(round(puntos_totales)), 1),
-                    value=min(LIMITE, max(int(round(puntos_totales)), 1)),
+                    value=max(int(round(puntos_totales)), 0), 
                     step=1,
                     key="slider_objetivo"
                 )
@@ -1466,7 +1659,7 @@ elif st.session_state.etapa == "ajuste":
                 col_anterior, col_espacio, col_aplicar = st.columns([1.3, 5.8, 1.7])
                 with col_anterior:
                     if st.button("← ANTERIOR", key="btn_ant_total_inner"):
-                        st.session_state.ajuste_confirmacion = False  # Regresa a la decisión de método
+                        st.session_state.ajuste_confirmacion = False  
                         st.rerun()
 
                 with col_aplicar:
@@ -1498,6 +1691,15 @@ elif st.session_state.etapa == "ajuste":
 
                 for i, tarea in enumerate(tareas):
                     puntos_actuales = calcular_puntos(tarea)
+                    key_slider = f"slider_individual_{i}"
+
+                    valor_slider_actual = st.session_state.get(
+                        key_slider,
+                        int(round(puntos_actuales))
+                    )
+                    color_slider, _ = obtener_color_por_puntos(valor_slider_actual)
+                    aplicar_color_slider(key_slider, color_slider)
+
 
                     objetivo_herramienta = st.slider(
                         f"{tarea['nombre']} · {tarea['situacion']}",
@@ -1505,7 +1707,7 @@ elif st.session_state.etapa == "ajuste":
                         max_value=max(int(round(puntos_actuales * 1.5)), 1),
                         value=int(round(puntos_actuales)),
                         step=1,
-                        key=f"slider_individual_{i}"
+                        key=key_slider
                     )
 
                     if puntos_actuales > 0:
@@ -1579,7 +1781,7 @@ elif st.session_state.etapa == "ajuste":
             col_anterior, col_espacio, col_aplicar = st.columns([1.3, 5.3, 2.3])
             with col_anterior:
                 if st.button("← ANTERIOR", key="btn_ant_indiv_inner"):
-                    st.session_state.ajuste_confirmacion = False  # Regresa a la decisión de método
+                    st.session_state.ajuste_confirmacion = False  
                     st.rerun()
 
             with col_aplicar:
@@ -1631,8 +1833,6 @@ elif st.session_state.etapa == "ajustada":
         else:
             mostrar_aviso("Con el ajuste seleccionado no se supera el nivel de acción.", "success")
 
-    # Se preparan los datos de la tabla, pero se muestran en desplegable
-    # para que la pantalla de resultado ajustado quede más compacta.
     filas_tabla_ajustada = [[
         "Herramienta/equipo",
         "Situación",
@@ -1722,7 +1922,7 @@ elif st.session_state.etapa == "ajustada":
             str(round(tarea["t"], 2)),
             str(round(puntos_iniciales, 2)),
             str(round(puntos_ajustados, 2))
-            ])
+        ])
 
     pdf = generar_pdf(
         "Resultado de evaluación",
@@ -1736,7 +1936,7 @@ elif st.session_state.etapa == "ajustada":
     with col_anterior:
         if st.button("← ANTERIOR", key="btn_ant_final"):
             st.session_state.etapa = "ajuste"
-            st.session_state.ajuste_confirmacion = True  # Regresa directo a la pantalla operativa con sliders
+            st.session_state.ajuste_confirmacion = True  
             st.rerun()
 
     with col_descarga:
