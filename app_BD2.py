@@ -19,7 +19,7 @@ st.set_page_config(
     page_icon="🛠️",
     layout="wide"
 )
-
+st.caption("VERSIÓN WEB ACTUALIZADA - prueba 14 junio")
 st.markdown("""
 <style>
     /* =========================
