@@ -1,12 +1,12 @@
-herramienta,situacion,tipo,aceleracion,incertidumbre,origen,fuente
-Taladro percutor,Taladrar en metal,Mano-brazo,3,1.5,Manual de instrucciones,Manual fabricante
-Taladro percutor,Atornillar,Mano-brazo,2.5,1.5,Manual de instrucciones,Manual fabricante
-PRO GKS 85 G,Serrar madera,Mano-brazo,3.5,1.5,Manual de instrucciones,Manual Bosch
-PRO GEX 12V-125,Lijar madera maciza,Mano-brazo,2.2,1.5,Manual de instrucciones,Manual Bosch
-PRO GWX 17-125 S,Lijar superficies (desbastado),Mano-brazo,5.4,1.5,Manual de instrucciones,Manual Bosch
-PRO GWX 17-125 S,Lijar con hoja de lija,Mano-brazo,3.6,1.5,Manual de instrucciones,Manual Bosch
-EXPERT EXDB18V2-180,Taladrar en hormigón,Mano-brazo,3.5,1.5,Manual de instrucciones,Manual fabricante
-PRO GDB 180 WE,Taladrar en hormigón,Mano-brazo,4.8,1.5,Manual de instrucciones,Manual Bosch
-PRO GKF 600,Fresar cantos,Mano-brazo,4.5,1.5,Manual de instrucciones,Manual Bosch
-PRO GOF 20-12,Fresar cantos,Mano-brazo,4,1.5,Manual de instrucciones,Manual Bosch
-PRO GDR 12V-110,Apriete de tornillos y tuercas (máximo admisible),Mano-brazo,10,1.5,Manual de instrucciones,Manual Bosch
+herramienta,situacion,tipo,aceleracion,incertidumbre,origen,fuente,factor_correccion
+PRO GSB 16 RE (Taladro percutor),Taladrar en metal,Mano-brazo,5.5,1.5,Manual de instrucciones,Manual fabricante,1.0
+PRO GSB 16 RE (Taladro percutor),Taladrar en hormigón,Mano-brazo,15.0,2.4,Manual de instrucciones,Manual fabricante,1.0
+PRO GKS 85 G (Sierra circular),Serrar madera,Mano-brazo,3.5,1.5,Manual de instrucciones,Manual Bosch,1.0
+PRO GEX 12V-125 (Lijadora),Lijar madera maciza,Mano-brazo,2.2,1.5,Manual de instrucciones,Manual Bosch,1.0
+PRO GWX 17-125 S (Lijadora),Lijar superficies (desbastado),Mano-brazo,5.4,1.5,Manual de instrucciones,Manual Bosch,1.0
+PRO GWX 17-125 S (Lijadora),Lijar con hoja de lija,Mano-brazo,3.6,1.5,Manual de instrucciones,Manual Bosch,1.0
+EXPERT EXDB18V2-180 (Taladro),Taladrar en hormigón,Mano-brazo,3.5,1.5,Manual de instrucciones,Manual fabricante,1.0
+PRO GDB 180 WE (Taladro),Taladrar en hormigón,Mano-brazo,4.8,1.5,Manual de instrucciones,Manual Bosch,1.0
+PRO GKF 600 (Fresadora),Fresar cantos,Mano-brazo,4.5,1.5,Manual de instrucciones,Manual Bosch,1.0
+PRO GOF 20-12 (Fresadora),Fresar cantos,Mano-brazo,4.0,1.5,Manual de instrucciones,Manual Bosch,1.0
+PRO GDR 12V-110 (Atornillador),Apriete de tornillos y tuercas (máximo admisible),Mano-brazo,10.0,1.5,Manual de instrucciones,Manual Bosch,1.0
